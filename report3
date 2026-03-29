@@ -1,0 +1,279 @@
+## Genel değerlendirme
+
+Sizin kısıtlarınıza göre en mantıklı strateji, **MLRC tarzı bir reproduction + küçük ama net extension** seçmek. Public COMP547 project page proje tipleri arasında hem **recent-study extension** hem de **published-work reproduction** yolunu açıkça sayıyor; proposal/progress/final report tarafında da **methodology, data+metrics, preliminary baseline, visualization** gibi somut beklentiler var. MLRC 2025 de reproducibility’ye ek olarak **original paper’ın ötesine geçen novel empirical insights** tarafını özellikle değerli görüyor. Bu yüzden en iyi fikirler, **FSQ/VQ-VAE**, **küçük ölçekli SSL ablation** ya da **dar kapsamlı latent-token modeling** gibi; baselines’ı net, veri/metric seçimi temiz ve rapor hikâyesi kurulabilir projeler. Buna karşılık **MAR, SphereAR, GAD, RAE** gibi ImageNet/Stable-Diffusion ölçeğine dayanan işler sizin koşullarınızda “havalı ama kötü seçim” sınıfına giriyor. ([Aykut Erdem][1])
+
+**Çelişki notu:** public bir **Spring 2026** course page bulamadım; sizin paylaştığınız 2026 metinde **progress report** tarihi hem **May 3, 2026** hem de **May 11, 2026** olarak geçiyor, ayrıca altta **March 30, 2025** diye başka bir yılın proposal cümlesi de karışmış görünüyor. Public **Spring 2024** page ise aynı proje yapısını tutarlı biçimde doğruluyor ve course communications için **Blackboard**’u esas kanal olarak veriyor; bu yüzden içerik/rubric beklentisini güvenilir kabul ediyorum ama 2026’daki o tek tarih için hocanın son duyurusunu esas almak gerekir. ([Aykut Erdem][1])
+
+Aşağıdaki **compute tahmini**, paper-scale reproduction değil, **course-scale prototype** için benim risk ayarlı değerlendirmemdir.
+
+---
+
+## Aday proje fikirleri
+
+### En uygun
+
+**1) FSQ as a drop-in replacement for VQ-VAE**
+
+* **Hangi paper’dan çıktığı:** *Finite Scalar Quantization: VQ-VAE Made Simple*. Paper, FSQ’yi VQ için **drop-in replacement** olarak sunuyor; **auxiliary losses**’i kaldırmayı, çok yüksek **codebook utilization** elde etmeyi ve **codebook collapse**’tan kaçınmayı hedefliyor. Official code desteği de `big_vision` içinde en azından kısmi olarak görünüyor. ([OpenReview][2])
+* **Neyin reproduce edileceği:** Küçük bir **VQ-VAE** baseline kurup, aynı latent budget altında **VQ vs FSQ** karşılaştırması yapmak. VQ-VAE’nin original paper’ı da discrete latents + learned/autoregressive prior fikrini doğrudan destekliyor. ([arXiv][3])
+* **Neyin extend edileceği:** En temiz extension, ya **tiny PixelCNN prior** eklemek ya da **codebook/bin count / dead-code behavior** üstüne kontrollü ablation yapmak. *Conditional Image Generation with PixelCNN Decoders* bu prior fikrini çok doğal kılıyor. ([arXiv][4])
+* **Veri / metrik / compute tahmini:** **CIFAR-10** ana dataset olarak çok uygun; **Fashion-MNIST** ikinci, çok ucuz sanity-check dataset olabilir. CIFAR-10, 60k adet **32×32** renkli görüntüden oluşuyor; Fashion-MNIST 60k train / 10k test **28×28** gri görüntü veriyor. Metrikler: reconstruction loss, PSNR/LPIPS, code usage/perplexity, dead-code ratio; prior eklerseniz FID. Benim değerlendirmem: **düşük/orta compute**. ([U of T Computer Science][5])
+* **Neden uygun:** Dersin **VQ-VAE / discrete latent / autoregressive** eksenine çok doğal oturuyor; contribution tek cümlede anlatılıyor; proposal, progress report ve final report için net hikâye veriyor.
+* **Neden riskli:** Hazır, tam official **PyTorch** pipeline net değil; quantizer’ı büyük olasılıkla siz adapte edeceksiniz. Scope aynı anda çok dataset + prior + fazla ablation ile şişerse proje dağılır.
+
+**2) VICReg with asymmetric branches on STL-10**
+
+* **Hangi paper’dan çıktığı:** *VICReg: Variance-Invariance-Covariance Regularization for Self-Supervised Learning*. Paper açıkça, iki branch’in **aynı parametreleri, aynı architecture’ı veya aynı modality’yi paylaşmak zorunda olmadığını** söylüyor; official code de **PyTorch**. Repo’nun default setup’ı ImageNet/8-GPU olsa da fikir küçük veriyle taşınabilir. ([OpenReview][6])
+* **Neyin reproduce edileceği:** STL-10 üzerinde küçük ölçekli **VICReg pretraining + linear evaluation**.
+* **Neyin extend edileceği:** **color vs grayscale**, **96→48 resolution mismatch**, **shared vs unshared encoder** gibi asymmetric-branch deneyleri.
+* **Veri / metrik / compute tahmini:** **STL-10**, unsupervised learning için özellikle doğal; çünkü **100,000 unlabeled** görüntü veriyor ve 96×96 çözünürlükte. Metrikler: linear eval, kNN, collapse diagnostics, training stability. Benim değerlendirmem: **düşük/orta compute**. ([Computer Science][7])
+* **Neden uygun:** Çok stabil; iki kişi rahat böler; PyTorch ekosistemi temiz; report’ta ablation ve limitation bölümü çok güçlü olur.
+* **Neden riskli:** Bu fikir **generative modeling** değil, daha çok **representation learning**. Hoca generative tarafa daha çok ağırlık veriyorsa bunu sunumda iyi çerçevelemek gerekir.
+
+**3) MAE mask ratio / masking strategy study on small images**
+
+* **Hangi paper’dan çıktığı:** *Masked Autoencoders Are Scalable Vision Learners*. Paper, **high masking ratio (özellikle ~75%)**’nun iyi çalıştığını ve **random masking**’in default tercih olduğunu açıkça gösteriyor; official repo **PyTorch**, ayrıca visualization demo için Colab da veriyor. ([CVF Open Access][8])
+* **Neyin reproduce edileceği:** Küçük bir ViT/conv tokenizer ile MAE pretraining + linear eval.
+* **Neyin extend edileceği:** **50 / 75 / 90% mask ratio** ve **random vs block vs grid masking** karşılaştırması.
+* **Veri / metrik / compute tahmini:** **CIFAR-10** veya **STL-10**. Metrikler: reconstruction loss, linear eval, kNN, training speed. Benim değerlendirmem: **orta compute**. ([U of T Computer Science][5])
+* **Neden uygun:** Modern, temiz, anlatması kolay; “tek hyperparameter ailesi neden bu kadar kritik?” diye net soru üretiyor.
+* **Neden riskli:** ViT/patching tarafı, FSQ veya VICReg’den biraz daha fazla engineering ister; ayrıca SSL hikâyesi generative kadar doğrudan değil.
+
+**4) Barlow Twins projector dimension study**
+
+* **Hangi paper’dan çıktığı:** *Barlow Twins: Self-Supervised Learning via Redundancy Reduction*. Paper, yöntemin **small batches** ile de iyi davrandığını vurguluyor ve **daha yüksek embedding dimensions** üstüne devam etmeyi future direction olarak bırakıyor; official repo **PyTorch**. Full-scale repo sonucu yine ağır (16 V100 civarı), ama course-scale sürüm çok daha küçük tutulabilir. ([arXiv][9])
+* **Neyin reproduce edileceği:** STL-10/CIFAR-10 üzerinde küçük ölçekli Barlow Twins baseline.
+* **Neyin extend edileceği:** **projector output dimension** ablation; isterseniz bir de projector depth ablation.
+* **Veri / metrik / compute tahmini:** **STL-10** veya **CIFAR-10**. Metrikler: linear eval, kNN, representation covariance statistics, memory/time trade-off. Benim değerlendirmem: **düşük/orta compute**. ([Computer Science][7])
+* **Neden uygun:** Method ve ablation çok temiz; final report’ta “why this hyperparameter matters” hikâyesi güçlü.
+* **Neden riskli:** Yine generative değil; ayrıca contribution iyi tasarlanmazsa “çok basit hyperparameter taraması” gibi görünebilir.
+
+---
+
+### Orta riskli
+
+**5) Small-scale RQ-VAE with regularization for small-data overfitting**
+
+* **Hangi paper’dan çıktığı:** *Autoregressive Image Generation using Residual Quantization*. Paper, official **PyTorch** repo ile geliyor; ayrıca conclusion’da üç limitation söylüyor: **küçük dataset’lerde overfitting**, daha büyük text-to-image modelleri ve **bidirectional context** eksikliği. Küçük veri için regularization ihtiyacını açıkça işaret ediyor. ([CVF Open Access][10])
+* **Neyin reproduce edileceği:** Küçük ölçekte **RQ-VAE + küçük RQ-Transformer** pipeline’ı.
+* **Neyin extend edileceği:** En mantıklı extension, paper’ın söylediği küçük-veri overfitting limitine odaklanıp **regularization** denemek: dropout, augmentation, latent smoothing, label smoothing benzeri düzenlemeler. Daha cesur bir alternatif, hafif bir **masked/bidirectional** decoder fikri.
+* **Veri / metrik / compute tahmini:** **CIFAR-10** ana seçenek; isterseniz **CelebA-32/64** ikinci domain olabilir. Metrikler: reconstruction, FID, train/val gap, token efficiency. Benim değerlendirmem: **orta compute**. ([U of T Computer Science][5])
+* **Neden uygun:** Dersle çok uyumlu; generative tarafı kuvvetli; “limitation-driven extension” olarak proposal’da çok iyi görünür.
+* **Neden riskli:** İki aşamalı pipeline ve residual quantization, FSQ’ye göre daha fazla moving part içeriyor. Official repo da paper-scale’de ciddi modellere gidiyor.
+
+**6) MaskGIT masking design study on tiny tokenizers**
+
+* **Hangi paper’dan çıktığı:** *MaskGIT: Masked Generative Image Transformer*. Paper, raster-order decoding’in verimsizliğini hedef alıyor; bidirectional masked token prediction ve iterative refinement öneriyor. Conclusion’da da **masking design** üstüne daha fazla çalışma gerektiğini açıkça söylüyor. Official repo ise **JAX**. ([arXiv][11])
+* **Neyin reproduce edileceği:** Küçük bir tokenizer + MaskGIT benzeri masked latent generator.
+* **Neyin extend edileceği:** **masking schedule**, confidence thresholding veya iteration count ablation.
+* **Veri / metrik / compute tahmini:** **CIFAR-10** ya da **Fashion-MNIST**. Metrikler: FID, reconstruction, decoding speed, diversity. Benim değerlendirmem: **orta compute**. ([U of T Computer Science][5])
+* **Neden uygun:** Modern generative transformer konusu; dersin autoregressive/masked generation ekseniyle çok uyumlu.
+* **Neden riskli:** Official code **JAX**, siz ise PyTorch rahatlığı istiyorsunuz. Ayrıca tokenizer + generator iki aşamalı kurgu scope’u büyütür.
+
+**7) ARPG: randomized parallel decoding on a tiny latent-token model**
+
+* **Hangi paper’dan çıktığı:** *Autoregressive Image Generation with Randomized Parallel Decoding*. OpenReview özeti, random-order parallel generation fikrini ve zero-shot inpainting/outpainting tarafını vurguluyor; official repo **Python**, HuggingFace `DiffusionPipeline` quick-start veriyor, ama released checkpoints **320M–1.3B** ImageNet modelleri. ([OpenReview][12])
+* **Neyin reproduce edileceği:** Küçük bir latent-token AR modelde **raster vs random-order decoding** karşılaştırması.
+* **Neyin extend edileceği:** **sample schedule** veya decoding order ablation; belki tiny inpainting demo.
+* **Veri / metrik / compute tahmini:** **CIFAR-10** gibi küçük data ile latent-token toy version. Metrikler: FID, wall-clock decoding speed, memory, inpainting quality. Benim değerlendirmem: **orta compute**. ([U of T Computer Science][5])
+* **Neden uygun:** Çok güncel; presentation’da ilgi çeker; “faster decoding” hikâyesi somut.
+* **Neden riskli:** Çok yeni olduğu için stabil reference implementation kültürü daha zayıf; proje, bilimsel sorudan çok engineering demo’ya kayabilir.
+
+**8) TarFlow mini-ablation: can flow tricks survive at CIFAR scale?**
+
+* **Hangi paper’dan çıktığı:** *Normalizing Flows are Capable Generative Models*. Paper, TarFlow’un Transformer tabanlı bir **Masked Autoregressive Flow** varyantı olduğunu ve sample quality için üç temel teknik önerdiğini söylüyor: **Gaussian noise augmentation**, **post-training denoising**, **guidance**. Official code de açık. OpenReview sayfası repo’yu açıkça “future explorations” için temel olarak konumluyor. ([arXiv][13])
+* **Neyin reproduce edileceği:** Küçük bir flow baseline veya sadeleştirilmiş TarFlow variant.
+* **Neyin extend edileceği:** Bu üç teknikten birini ya da ikisini CIFAR ölçeğinde ablate etmek.
+* **Veri / metrik / compute tahmini:** **CIFAR-10**. Metrikler: bits/dim, FID, sample diversity. Benim değerlendirmem: **orta compute**. ([U of T Computer Science][5])
+* **Neden uygun:** Dersin **normalizing flows** eksenine çok temiz oturuyor; “flows are back?” hikâyesi kuvvetli.
+* **Neden riskli:** RealNVP’den daha modern ama daha karmaşık; küçük ölçekte paper’daki kazanımların aynısını görmek zor olabilir.
+
+---
+
+### Gereksiz zor
+
+**9) SphereAR on small scale**
+
+* **Hangi paper’dan çıktığı:** *Hyperspherical Latents Improve Continuous-Token Autoregressive Generation*. Official repo **PyTorch**, ama environment tarafında **CUDA 12.6 + FlashAttention** istiyor; official training setup da açıkça **8×A100 / 16×A100 / 32×A100** ve modeller **208M / 479M / 943M** ölçeğinde. Future work kısmı daha fazla dataset ve multimodal extension öneriyor. ([GitHub][14])
+* **Neyin reproduce edileceği:** Hyperspherical latent + AR decoding fikri.
+* **Neyin extend edileceği:** Kâğıt üstünde küçük dataset/multimodal extension.
+* **Veri / metrik / compute tahmini:** Paper-scale resmen **yüksek compute**; course-scale küçültme teorik olarak mümkün ama pratikte çok riskli. ([GitHub][14])
+* **Neden uygun:** Çok güncel ve teknik olarak ilginç.
+* **Neden riskli:** Sizin ekip/compute/OS kısıtlarınıza göre **gereksiz zor**. Mac/Windows + laptop dostu bir ilk tercih değil.
+
+**10) MAR: continuous-token AR without VQ**
+
+* **Hangi paper’dan çıktığı:** *Autoregressive Image Generation without Vector Quantization*. Official repo **PyTorch**, ama README doğrudan **16–32 H100** training times veriyor. Paper ayrıca **noticeable artifacts**, **pre-trained tokenizer quality** bağımlılığı ve testlerin çoğunlukla **ImageNet** ile sınırlı kaldığını açıkça kabul ediyor. ([GitHub][15])
+* **Neyin reproduce edileceği:** Continuous-token AR with Diffusion Loss.
+* **Neyin extend edileceği:** Başka dataset’e taşımak veya tokenizer etkisini incelemek.
+* **Veri / metrik / compute tahmini:** Paper-scale açık biçimde **çok yüksek compute**. ([GitHub][15])
+* **Neden uygun:** Güncel ve teknik olarak çok “cool”.
+* **Neden riskli:** Tam sizin kaçınmak istediğiniz tipte proje: ağır compute, çok büyük model, tokenizer bağımlılığı, küçük ekip için yüksek integration riski.
+
+---
+
+## Objektif karşılaştırma tablosu
+
+Aşağıdaki puanlar, yukarıdaki paper/repo/dataset durumlarından türettiğim **risk-ayarlı** değerlendirmeler.
+
+| Fikir                            | Band         | Ders uyumu | 2 kişi için uygulanabilirlik | Compute kolaylığı | Kod yolu temizliği | Proposal / report hikâyesi |
+| -------------------------------- | ------------ | ---------- | ---------------------------- | ----------------- | ------------------ | -------------------------- |
+| FSQ vs VQ-VAE                    | En uygun     | Çok yüksek | Çok yüksek                   | Yüksek            | Orta               | Çok yüksek                 |
+| VICReg asymmetric branches       | En uygun     | Yüksek     | Çok yüksek                   | Yüksek            | Yüksek             | Çok yüksek                 |
+| MAE masking study                | En uygun     | Yüksek     | Yüksek                       | Orta              | Yüksek             | Yüksek                     |
+| Barlow Twins projector study     | En uygun     | Yüksek     | Yüksek                       | Yüksek            | Yüksek             | Yüksek                     |
+| RQ-VAE small-data regularization | Orta riskli  | Çok yüksek | Orta                         | Orta              | Orta/Yüksek        | Yüksek                     |
+| MaskGIT masking design           | Orta riskli  | Çok yüksek | Orta                         | Orta              | Düşük              | Yüksek                     |
+| ARPG tiny random-order decoding  | Orta riskli  | Çok yüksek | Orta                         | Orta              | Orta               | Orta                       |
+| TarFlow mini-ablation            | Orta riskli  | Çok yüksek | Orta                         | Orta              | Yüksek             | Orta                       |
+| SphereAR                         | Gereksiz zor | Çok yüksek | Düşük                        | Çok düşük         | Düşük              | Orta                       |
+| MAR                              | Gereksiz zor | Çok yüksek | Çok düşük                    | Çok düşük         | Orta               | Orta                       |
+
+---
+
+## En iyi 3
+
+**1) FSQ vs VQ-VAE**
+En güçlü aday. Dersin **discrete latent / VQ-VAE / autoregressive** çizgisine çok doğal oturuyor; contribution tek cümlede anlatılıyor; baseline ve ablation seti çok net. Paper’ın kendi claim’i de tam sizin işinize yarıyor: **simpler quantization, no codebook collapse, high utilization**. ([OpenReview][16])
+
+**2) VICReg with asymmetric branches**
+En güvenli ikinci seçenek. Stable, net, iki kişilik ekip için rahat bölünür ve paper’ın “branches need not share parameters / architecture / modality” cümlesi size doğrudan temiz bir extension veriyor. ([OpenReview][6])
+
+**3) MAE mask ratio / masking strategy study**
+Risk-ayarlı üçüncü sıraya bunu koyarım; çünkü paper’daki ana hipotezler (**75% mask ratio**, **random masking**) küçük ölçekte bile test edilebilir ve official PyTorch path temiz. ([CVF Open Access][8])
+
+**Not:** Daha generative bir üçüncü seçenek tercih edilecekse, **MAE yerine RQ-VAE** alınabilir; ama implementation riski belirgin biçimde artar. ([CVF Open Access][10])
+
+---
+
+## Ben olsam bunu seçerdim
+
+**FSQ vs VQ-VAE** seçerdim.
+
+Nedeni basit: Bu proje, dersin tam merkezindeki **VQ-VAE / latent representation / autoregressive prior** eksenine oturuyor; “neden bu problem önemli?” sorusuna çok temiz cevap veriyor; küçük ölçekte bile quantitative + qualitative sonuç çıkarıyor; ablation’ı hazır; proposal’a hemen yazılıyor; progress report için baseline ve visualization üretmek kolay. RQ-VAE ve MaskGIT daha “havalı” görünebilir, ama biri gereksiz iki-aşamalı/overfit riski taşıyor, diğeri de JAX tarafında gereksiz friction yaratıyor. ([OpenReview][16])
+
+---
+
+## Seçtiğim proje için proposal taslağı
+
+### Provisional title
+
+**From VQ to FSQ: A Low-Compute Study of Discrete Latent Image Modeling with Tiny Autoregressive Priors**
+
+### Research question
+
+**Can FSQ serve as a simpler and more stable drop-in replacement for VQ in a VQ-VAE-style image tokenizer on small datasets, while preserving or improving downstream latent generation with a tiny autoregressive prior?** Bu soru hem FSQ paper’ının ana claim’ine hem de VQ-VAE + autoregressive prior çizgisine doğrudan dayanıyor. ([OpenReview][16])
+
+### Key papers
+
+* *Finite Scalar Quantization: VQ-VAE Made Simple* — ana paper. ([OpenReview][16])
+* *Neural Discrete Representation Learning* — VQ-VAE baseline ve discrete latent motivasyonu. ([arXiv][3])
+* *Conditional Image Generation with PixelCNN Decoders* — tiny latent prior için en doğal referans. ([arXiv][4])
+* İsteğe bağlı related-work comparison için: *Autoregressive Image Generation using Residual Quantization*. ([CVF Open Access][10])
+
+### Proposed baseline
+
+1. **Baseline A:** standard **VQ-VAE** tokenizer
+2. **Baseline B:** same tokenizer + **tiny PixelCNN prior** over latent indices
+   Bu baseline seti, hem discrete tokenizer’ı hem de “latents gerçekten generation için işe yarıyor mu?” sorusunu kapsar. ([arXiv][3])
+
+### Proposed extension
+
+1. **Core extension:** VQ quantizer yerine **FSQ** koymak; latent capacity’yi mümkün olduğunca eşleştirerek **fair comparison** yapmak
+2. **Main ablation:** bin count / latent dim / token usage / dead-code behavior
+3. **Optional extension:** aynı tiny PixelCNN prior’ı FSQ latents üstünde çalıştırıp **VQ vs FSQ downstream generation** kıyaslamak
+   Bu, paper’ın “drop-in replacement” claim’ini küçük ölçekte gerçekten sınar. ([OpenReview][16])
+
+### Dataset
+
+* **Primary dataset:** **CIFAR-10** — 60k adet 32×32 color image; küçük ama trivial değil. ([U of T Computer Science][5])
+* **Secondary sanity-check dataset:** **Fashion-MNIST** — 28×28 grayscale, çok ucuz koşar ve debugging için çok kullanışlıdır. ([GitHub][17])
+
+### Metrics
+
+* **Reconstruction:** MSE / L1, PSNR, mümkünse LPIPS
+* **Discrete behavior:** code usage, perplexity, dead-code ratio
+* **Generation:** FID (özellikle CIFAR-10 için), sample diversity
+* **Qualitative:** reconstruction grids, unconditional samples, nearest-neighbor sanity check
+* **Stability:** aynı setup’ın 2–3 seed altında varyansı
+  Bu metrik seti, “sadece loss düştü” yerine gerçekten raporlanabilir bir sonuç paketi üretir.
+
+### Rough timeline
+
+* **29 Mar – 5 Apr:** VQ-VAE baseline + CIFAR-10 pipeline + evaluation scripts
+* **6 Apr – 12 Apr:** FSQ quantizer implementation + matched-capacity experiments
+* **13 Apr – 19 Apr:** tiny PixelCNN prior + first generation samples
+* **20 Apr – 27 Apr:** ablations, figures, progress presentation hazırlığı
+* **Progress sonrası:** second dataset / extra ablations / write-up cleanup / final report
+* **Takım bölümü:**
+
+  * **Sen:** baseline, evaluation, plotting, write-up skeleton
+  * **Kadir:** FSQ module, latent prior, experiment orchestration
+  * **Ortak:** ablation design, figures, presentation, final analysis
+
+### Proposal’da hangi başlık altında ne yazılacağı
+
+Project page’in istediği proposal yapısı şu: **1/4 page introduction, 1/2 page related work, 1/4 page method, 1/8 page experimental evaluation, 1/8 page work plan, 1/4 page abstract + references**. ([Aykut Erdem][1])
+
+**Abstract + references (1/4 sayfa)**
+
+* 4–5 cümlede problem, yöntem, neden önemli, beklenen katkı
+* Son cümle: “We reproduce a VQ-VAE baseline and test whether FSQ offers a simpler and more stable discrete bottleneck under low compute.”
+* 4 ana referans: VQ-VAE, FSQ, PixelCNN, belki RQ-VAE
+
+**Introduction (1/4 sayfa)**
+
+* Discrete latents neden önemli?
+* VQ-VAE neden güçlü ama bazen kırılgan?
+* FSQ neden ilginç?
+* Bu projenin dersle bağı: discrete latent models + autoregressive priors
+
+**Related work (1/2 sayfa)**
+
+* VQ-VAE
+* FSQ
+* Latent autoregressive priors / PixelCNN
+* Kısa bir paragraf: RQ-VAE / MaskGIT gibi komşu discrete-token generative modeller
+  Burada amaç “biz nerede duruyoruz?” sorusunu temiz cevaplamak.
+
+**Method (1/4 sayfa)**
+
+* Baseline VQ-VAE architecture
+* FSQ replacement nasıl yapılacak
+* Matched-capacity comparison nasıl sağlanacak
+* Tiny PixelCNN prior varsa çok kısa teknik açıklama
+* 1 küçük equation seti yeter: quantization mapping + objective terms
+
+**Experimental evaluation (1/8 sayfa)**
+
+* CIFAR-10 ve Fashion-MNIST
+* Metrics
+* 2 seed ya da 3 seed planı
+* “Low-compute / small-scale setting” cümlesi
+* Hangi comparison’lar yapılacak: VQ vs FSQ, with/without prior
+
+**Work plan (1/8 sayfa)**
+
+* Week-by-week plan
+* Sen / Kadir görev paylaşımı
+* Risk mitigation: “If latent prior becomes too time-consuming, we will prioritize the controlled FSQ-vs-VQ ablation study.”
+
+Bu proje, course progress report’un beklediği **baseline result, methodology, experimental evaluation ve visualization** maddelerini de çok doğal karşılıyor. ([Aykut Erdem][1])
+
+[1]: https://aykuterdem.github.io/classes/comp547.s24/project.html "https://aykuterdem.github.io/classes/comp547.s24/project.html"
+[2]: https://openreview.net/pdf?id=8ishA3LxN8&utm_source=chatgpt.com "https://openreview.net/pdf?id=8ishA3LxN8"
+[3]: https://arxiv.org/abs/1711.00937 "https://arxiv.org/abs/1711.00937"
+[4]: https://arxiv.org/abs/1606.05328 "https://arxiv.org/abs/1606.05328"
+[5]: https://www.cs.toronto.edu/~kriz/cifar.html "CIFAR-10 and CIFAR-100 datasets"
+[6]: https://openreview.net/pdf?id=xm6YD62D1Ub "https://openreview.net/pdf?id=xm6YD62D1Ub"
+[7]: https://cs.stanford.edu/~acoates/stl10/ "https://cs.stanford.edu/~acoates/stl10/"
+[8]: https://openaccess.thecvf.com/content/CVPR2022/papers/He_Masked_Autoencoders_Are_Scalable_Vision_Learners_CVPR_2022_paper.pdf "https://openaccess.thecvf.com/content/CVPR2022/papers/He_Masked_Autoencoders_Are_Scalable_Vision_Learners_CVPR_2022_paper.pdf"
+[9]: https://arxiv.org/pdf/2103.03230 "https://arxiv.org/pdf/2103.03230"
+[10]: https://openaccess.thecvf.com/content/CVPR2022/papers/Lee_Autoregressive_Image_Generation_Using_Residual_Quantization_CVPR_2022_paper.pdf "https://openaccess.thecvf.com/content/CVPR2022/papers/Lee_Autoregressive_Image_Generation_Using_Residual_Quantization_CVPR_2022_paper.pdf"
+[11]: https://arxiv.org/abs/2202.04200 "https://arxiv.org/abs/2202.04200"
+[12]: https://openreview.net/forum?id=rJdGst0W8s "https://openreview.net/forum?id=rJdGst0W8s"
+[13]: https://arxiv.org/abs/2412.06329 "https://arxiv.org/abs/2412.06329"
+[14]: https://github.com/guolinke/SphereAR "https://github.com/guolinke/SphereAR"
+[15]: https://github.com/lth14/mar "https://github.com/lth14/mar"
+[16]: https://openreview.net/pdf?id=8ishA3LxN8 "https://openreview.net/pdf?id=8ishA3LxN8"
+[17]: https://github.com/zalandoresearch/fashion-mnist "https://github.com/zalandoresearch/fashion-mnist"

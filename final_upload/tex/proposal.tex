@@ -1,0 +1,102 @@
+%%%%%%%% ICML 2021 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+\usepackage[accepted]{comp547}
+
+\icmltitlerunning{Project Proposal}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{When Does Cheap Consistency Tuning Pay Off?\\A Latency-Matched Comparison with Fast Diffusion Sampling}
+
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Batuhan Karaman (79791)}{equal,to}
+\icmlauthor{Kadir Yi\u{g}it \"Oz\c{c}elik (79975)}{equal,to}
+\end{icmlauthorlist}
+
+\icmlaffiliation{to}{Department of Computer Engineering, Ko\c{c} University}
+
+\icmlcorrespondingauthor{Batuhan Karaman}{bkaraman21@ku.edu.tr}
+\icmlcorrespondingauthor{Kadir Yi\u{g}it \"Oz\c{c}elik}{kadirozcelik21@ku.edu.tr}
+
+\vskip 0.3in
+]
+
+\printAffiliationsAndNotice{\icmlEqualContribution}
+
+\begin{abstract}
+When generating images on a commodity GPU, practitioners face a choice: invest upfront in consistency tuning and then sample in one or two steps, or skip the tuning and use a fast multi-step diffusion sampler directly. Easy Consistency Tuning (ECT) recently made the first option cheap, reaching a 2-step FID of 2.73 on CIFAR-10 in about one A100-hour. We reproduce the ECT tuning pipeline on CIFAR-10 at small scale and compare it against the Heun ODE sampler from EDM under matched per-image latency budgets on a single T4 GPU. Beyond inference speed, we estimate the break-even point: how many images must be generated before the upfront tuning cost of ECT is recovered through faster sampling. We also ablate the tuning schedule to test whether early stopping is viable. The result is a small-scale empirical study of when a short tuning stage becomes preferable to direct fast sampling under limited hardware budgets.
+\end{abstract}
+
+\section{Introduction}
+
+Diffusion models generate images by iteratively denoising samples from a Gaussian prior~\cite{ho2020ddpm}. The quality is high, but standard samplers need many forward passes. Two strategies exist for reducing this cost. The first is to use a fast ODE sampler such as the deterministic Heun sampler from EDM~\cite{karras2022edm}, which reduces the step count to 20--80 without any retraining. The second is to fine-tune the model into a consistency model~\cite{song2023consistency} that generates in one or two steps.
+
+Until recently the second option was too expensive. ECT~\cite{geng2025ect} changed this by fine-tuning a pretrained diffusion checkpoint into a consistency model in about one A100-hour on CIFAR-10, reaching a 2-step FID of 2.73. This is competitive with methods that require far more compute~\cite{song2024improved}.
+
+With ECT, the decision is no longer whether consistency tuning is affordable, but whether it is worth it for a given workload. Someone generating millions of images will easily amortize a few hours of tuning; someone who needs a hundred samples may not. We set up this comparison on a T4 GPU, measuring wall-clock time rather than FLOPs, since memory bandwidth and kernel scheduling shift the balance across GPU architectures. As a second axis, we ablate the tuning schedule to find where quality degrades under early stopping.
+
+\section{Related Work}
+
+Song et al.~\cite{song2021scorebased} unified score-based and diffusion models under a continuous SDE. Karras et al.~\cite{karras2022edm} improved noise schedules and preconditioning; their Heun sampler is a strong few-step baseline. Progressive distillation~\cite{salimans2022progressive} halves the step count per round but needs a separate distillation stage. Consistency models~\cite{song2023consistency} enforce that every ODE trajectory point maps to the same output, giving single-step generation. Song and Dhariwal~\cite{song2024improved} stabilized training at high cost; ECT~\cite{geng2025ect} reduced this via fine-tuning from a pretrained checkpoint. The paper reports strong few-step FID and notes that 2-step inference with a smaller model can outperform 1-step inference with a larger one, calling for ``further studies of inference-optimal scaling''~\cite{geng2025ect}. However, it does not compare against fast multi-step samplers under matched latency on commodity hardware, nor does it analyze when the upfront tuning cost becomes worthwhile. We use Heun as the diffusion baseline since it is the default deterministic sampler in the EDM framework from which ECT is initialized. We evaluate with FID~\cite{heusel2017fid} following the ECT setup.
+
+\section{The Approach}
+
+All methods start from the same pretrained EDM~\cite{karras2022edm} checkpoint on CIFAR-10~\cite{krizhevsky2009cifar} that the ECT codebase\footnote{\url{https://github.com/locuslab/ect}} uses. ECT additionally allocates compute to a short tuning stage that modifies the model weights before few-step sampling; the Heun baseline uses the original checkpoint directly.
+
+We first run ECT tuning and verify that few-step generation produces FID in the range reported by the paper (the published 2.73 was obtained on an A100; we do not target an exact match on a T4). We then fix several per-image latency targets on a T4 and evaluate ECT at 1 and 2 steps alongside the Heun sampler from EDM at whatever step count fits within the same time budget. We report single-image latency (batch size 1) for interactive use and batched throughput (batch size 64) for offline generation, since these correspond to different practical scenarios. The primary quality metric is FID; the primary cost metrics are wall-clock latency and number of function evaluations (NFE).
+
+To address the total-cost question, we compute the break-even generation count $N^*$ where
+$T_{\mathrm{tune}} + N^* \cdot t_{\mathrm{ECT}} = N^* \cdot t_{\mathrm{Heun}}$,
+i.e.\ the number of images at which ECT's upfront tuning cost is amortized by its faster per-image inference. We report separate $N^*$ values for interactive generation (batch size 1) and batched offline generation (batch size 64).
+
+For the tuning ablation, we save ECT at 25\%, 50\%, 75\%, and 100\% of the full schedule and evaluate 2-step FID at each point. All experiments run on a single T4 (16\,GB, Colab); we report total GPU-hours.
+
+\section{Experimental Evaluation}
+
+All experiments use CIFAR-10 (50k train, 10k test, 32$\times$32) on a single T4 (16\,GB, Colab). We report FID, wall-clock latency (batch 1 and 64), and NFE. The main comparison evaluates ECT at 1--2 steps against Heun at matched latency. The tuning ablation adds 4 checkpoints. We use one seed for all runs and a confirmatory seed for configurations that are not dominated in the FID-versus-latency plane. Latency targets are determined from pilot timing runs to ensure feasible matched-budget comparisons. FID is computed with the same sample count across all methods. Published ECT numbers (A100) are included as reference points.
+
+\section{Work Plan}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Activity} & \textbf{Deadline} \\
+\hline
+Set up repo, verify ECT pipeline on T4 & 04/05/26 \\
+\hline
+Reproduce ECT, implement Heun eval & 04/12/26 \\
+\hline
+Latency-matched comparison, break-even & 04/26/26 \\
+\hline
+Progress presentation and report & 04/30/26 \\
+\hline
+Tuning ablation, confirmatory seeds & 05/17/26 \\
+\hline
+Write final report, prepare slides & 06/07/26 \\
+\hline
+Final presentation & 06/11/26 \\
+\hline
+\end{tabular}
+
+\vspace{0.3em}
+Batuhan handles ECT reproduction, the evaluation pipeline, and report writing. Kadir Yi\u{g}it handles the Heun baselines, latency profiling, break-even analysis, and the tuning ablation. Experiment design, figures, and presentations are shared.
+
+We structure the experiments so that the inference-side comparison and break-even analysis are independent of the tuning ablation. If full-length tuning is impractical under Colab session limits, we prioritize a reduced schedule with periodic checkpointing and use the released model as a reference point.
+
+\bibliography{proposal}
+\bibliographystyle{comp547}
+
+\end{document}
