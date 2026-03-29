@@ -1,0 +1,38 @@
+# Experiment grid for ECT vs Heun comparison
+# All experiments on CIFAR-10, single T4 GPU
+
+dataset: cifar10
+hardware: t4-16gb
+precision: float32
+
+# ECT configurations
+ect:
+  checkpoint: "pretrained_edm + ect_tuning"
+  steps: [1, 2]
+  batch_sizes: [1, 64]
+
+# Heun baseline configurations (step counts determined by pilot latency matching)
+heun:
+  checkpoint: "pretrained_edm"
+  steps: [10, 20, 40, 80]  # will be narrowed after pilot runs
+  batch_sizes: [1, 64]
+
+# Tuning ablation checkpoints
+tuning_ablation:
+  schedule_fractions: [0.25, 0.50, 0.75, 1.00]
+  eval_steps: 2
+
+# Evaluation
+evaluation:
+  fid_samples: 50000
+  latency_runs: 500
+  latency_warmup: 50
+  seeds: [42, 123]  # primary + confirmatory
+
+# Metrics to record per configuration
+metrics:
+  - fid
+  - nfe
+  - latency_batch1_ms
+  - latency_batch64_ms
+  - gpu_hours
