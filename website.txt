@@ -1,0 +1,384 @@
+About Schedule Presentations Assignments Project 
+COMP547: Deep Unsupervised Learning
+Spring 2026
+Course Information
+About
+As an exciting new field, deep unsupervised learning has gradually emerged as a promising alternative to supervised approaches to representation learning -- with some practical and theoretical considerations. To begin with, unsupervised data is much cheaper to obtain, but more importantly, as humans, we don't need millions of labeled data to learn.
+
+This class will provide an in-depth and comprehensive overview of the fundamental concepts and recent advances in the field of deep unsupervised learning. The first part of the course focuses on deep generative models such as autoregressive models, normalizing flow models, variational autoencoders, generative adversarial networks and their extensions with discrete latent variables. The second part covers self-supervised learning, including pretraining of large language models. The class is mostly modeled after the Deep Unsupervised Learning course at Berkeley. The class is taught by Aykut Erdem. The teaching assistants are Andrew Bond, Hakan Capuk, and Ilkin Umut Melanlioglu.
+
+
+                                                      
+Instruction style: During the semester, students are responsible for studying and keeping up with the course material outside of class time. These may involve reading particular book chapters, papers or blogs and watching some video lectures.
+
+Time and Location
+Lectures: Tuesday and Thursday at 14:30-15:40 (SOS 103)
+
+PS Hour:Friday 14:30-15:40 (SOS Z27)
+
+Communication
+The course webpage will be updated regularly throughout the semester with lecture notes, presentations, assignments and important deadlines. All other course related communications will be carried out through KUHub Learn.
+
+Prerequisites
+COMP547 is intended for graduate students enrolled in Computer Science MS and PhD programs. Senior undergraduate students and all non-COMP graduate students need the instructor's permission to register for the class. The prerequisites for this course are:
+
+Programming (you should be a proficient programmer to work out the assignments and to implement your course project.)
+Calculus (differentiation, chain rule) and Linear Algebra (vectors, matrices, eigenvalues/vectors) (MATH107)
+Basic Probability and Statistics (random variables, expectations, multivariate Gaussians, Bayes rule, conditional probabilities) (ENGR200)
+Machine Learning or Deep Learning (you can still survive this course without a machine learning course before, but it is highly recommended (ENGR421, COMP541)
+Optimization (cost functions, taking gradients, regularization)
+Course Requirements and Grading
+Grading will be based on
+
+Assignments (21%) (3 assignments x 8% each)
+Midterm Exam (10%)
+Course Project (presentations and reports) (41%),
+Paper Presentations (8%),
+Paper Reviews (10%),
+Class participation (10%),
+Reference Books
+Jakub M. Tomczak, Deep Generative Modeling, Springer Cham, 2025 (available online)
+Schedule
+<
+Week	Topic	Assignments
+Feb 10-12	Introduction to the course (Survey)
+Neural Building Blocks I: Spatial Processing with CNNs	
+Feb 17-19	Neural Building Blocks II: Sequential Processing with RNNs
+Neural Building Blocks III: Attention and Transformers	
+Feb 24-26	Autoregressive Models	Assg 1 out
+Mar 3-5	Normalizing Flow Models	
+Mar 10-12	Latent Variable Models	Assg 1 due, Assg 2 out
+Mar 17-19	Spring Break	
+Mar 24-26	Generative Adversarial Networks I	Project proposal due
+Mar 31-Apr 2	Generative Adversarial Networks II	Assg 2 due, Assg 3 out
+Apr 7-9	Diffusion Models I	
+Apr 14-16	Diffusion Models II	
+Apr 21	Strengths and Weaknesses of Current Generative Models	Assg 3 due
+Apr 28-30	Project Progress Presentations	Project progress reports due
+May 5-7	Video Generation	Midterm Exam
+May 12-14	Self-Supervised Learning I	
+May 21	Self-Supervised Learning II	
+June 9-11	Final Project Presentations	Final project reports due
+design: templated.co - banner image: Dall-E v3 generated art using the prompt "Can you generate a wide-screen, funny illustration in the style of Jean-Jacques Sempe in a dark background for my deep unsupervised learning class. It includes generative models, namely autoregressive models (like you), flow-based models, variational autoencoders, generative adversarial models, and diffusion models, and self-supervised learning. Don't use any French."
+
+About Schedule Presentations Assignments Project 
+COMP547: Deep Unsupervised Learning
+Spring 2026
+Detailed Syllabus and Lectures
+Lecture 8: Generative Adversarial Networks (slides)
+implicit models, generative adversarial networks (GANs), evaluation metrics, theory behind GANs, GAN architectures, conditional GANs, cycle-consistent adversarial networks, representation learning in GANs, applications
+
+Please study the following material in preparation for the class:
+
+Key Readings:
+Sections 20.10.4 of the Deep Learning textbook.
+Generative Adversarial Networks, Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio, NIPS 2014.
+Unrolled Generative Adversarial Networks, Luke Metz, Ben Poole, David Pfau, Jascha Sohl-Dickstein, ICLR 2017.
+A note on the evaluation of generative models, Lucas Theis, Aäron van den Oord, Matthias Bethge, ICLR 2016.
+On the Robustness of Quality Measures for GANs, Motasem Alfarra, Juan C. Pérez, Anna Frühstück, Philip H. S. Torr, Peter Wonka, Bernard Ghanem, arXiv Preprint arXiv:2201.13019, 2025.
+Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, Alec Radford, Luke Metz, Soumith Chintala, ICLR 2016.
+Improved Techniques for Training GANs, Tim Salimans, Ian Goodfellow, Wojciech Zaremba, Vicki Cheung, Alec Radford, Xi Chen, Xi Chen, NIPS 2016.
+Projected GANs Converge Faster, Axel Sauer, Kashyap Chitta, Jens Müller, Andreas Geiger, NeurIPS 2021.
+Wasserstein Generative Adversarial Networks, Martin Arjovsky, Soumith Chintala, Léon Bottou, ICML 2017.
+Improved Training of Wasserstein GANs, Ishaan Gulrajani, Faruk Ahmed, Martin Arjovsky, Vincent Dumoulin, Aaron C. Courville, NIPS 2017.
+Progressive Growing of GANs for Improved Quality, Stability, and Variation, Tero Karras, Timo Aila, Samuli Laine, Jaakko Lehtinen, ICLR 2018.
+Spectral Normalization for Generative Adversarial Networks , Takeru Miyato, Toshiki Kataoka, Masanori Koyama, Yuichi Yoshida, ICLR 2018.
+Self-Attention Generative Adversarial Networks, Han Zhang, Ian Goodfellow, Dimitris Metaxas, Augustus Odena, ICML 2019.
+Large Scale GAN Training for High Fidelity Natural Image Synthesis, Andrew Brock, Jeff Donahue, Karen Simonyan, ICLR 2019.
+A Style-Based Generator Architecture for Generative Adversarial Networks, Tero Karras, Samuli Laine, Timo Aila, CVPR 2019.
+Analyzing and Improving the Image Quality of StyleGAN, Tero Karras, Samuli Laine, Miika Aittala, Janne Hellsten, Jaakko Lehtinen, Timo Aila, CVPR 2020.
+Alias-Free Generative Adversarial Networks , Tero Karras, Miika Aittala, Samuli Laine, Erik Härkönen, Janne Hellsten, Jaakko Lehtinen, Timo Aila, NeurIPS 2021.
+StyleGAN-XL: Scaling StyleGAN to Large Diverse Datasets, Axel Sauer, Katja Schwarz, Andreas Geiger, arXiv preprint arXiv:2202.00273, 2025.
+Self-Distilled StyleGAN: Towards Generation from Internet Photos, Ron Mokady, Michal Yarom, Omer Tov, Oran Lang, Daniel Cohen-Or, Tali Dekel, Michal Irani and Inbar Mosseri, arXiv preprint arXiv:2202.12211, 2025.
+Variational Discriminator Bottleneck: Improving Imitation Learning, Inverse RL, and GANs by Constraining Information Flow, Xue Bin Peng, Angjoo Kanazawa, Sam Toyer, Pieter Abbeel, Sergey Levine, ICLR 2019.
+Image-to-Image Translation with Conditional Adversarial Networks, Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, Alexei A. Efros, CVPR 2017
+Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks, Jun-Yan Zhu, Taesung Park, Phillip Isola, Alexei A. Efros, ICCV 2017
+InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, Xi Chen, Yan Duan, Rein Houthooft, John Schulman, Ilya Sutskever, Pieter Abbeel, NIPS 2016.
+Adversarially Learned Inference, Vincent Dumoulin, Ishmael Belghazi, Ben Poole, Olivier Mastropietro, Alex Lamb, Martin Arjovsky, Aaron Courville, ICLR 2017.
+Large Scale Adversarial Representation Learning, Jeff Donahue, Karen Simonyan, NeurIPS 2019.
+
+Suggested Video Material:
+Jeff Donahue & Mihaela Rosca's lecture on Generative Adversarial Networks
+CVPR 2018 Tutorial on GANs, Ian Goodfellow, Phillip Isola, Taesung Park and Jun-Yan Zhu
+
+
+Additional Resources:
+GAN Lab, Minsuk Kahng, Nikhil Thorat, Polo Chau, Fernanda Viégas, and Martin Wattenberg, 2019.
+[Blog post] A Gentle Introduction to BigGAN the Big Generative Adversarial Network, Jason Brownlee
+[Blog post] GANs and Divergence Minimization, Colin Raffel.
+[Blog post] From GAN to WGAN, Lilian Weng
+[Blog post] An Alternative Update Rule for Generative Adversarial Networks, Ferenc Huszár
+Open Questions about Generative Adversarial Networks, Distill, 2019.
+Generating Videos with Scene Dynamics, Carl Vondrick, Hamed Pirsiavash, Antonio Torralba, NIPS 2016.
+Adversarial Video Generation on Complex Datasets, Aidan Clark, Jeff Donahue, Karen Simonyan, arXiv preprint arXiv:1907.06571, 2019.
+Learning a Probabilistic Latent Space of Object Shapes via 3D Generative-Adversarial Modeling, Jiajun Wu. Chengkai Zhang, Tianfan Xue, William T. Freeman, Joshua B. Tenenbaum, NIPS 2016.
+HoloGAN: Unsupervised Learning of 3D Representations From Natural Images, Thu Nguyen-Phuoc, Chuan Li, Lucas Theis, Christian Richardt, Yong-Liang Yang, ICCV 2019.
+Video-to-Video Synthesis, Ting-Chun Wang, Ming-Yu Liu, Jun-Yan Zhu, Guilin Liu, Andrew Tao, Jan Kautz, Bryan Catanzaro, NeurIPS 2018.
+Everybody Dance Now, Caroline Chan, Shiry Ginosar, Tinghui Zhou, Alexei A. Efros, ICCV 2019.
+StackGAN: Text to Photo-realistic Image Synthesis with Stacked Generative Adversarial Networks, Han Zhang, Tao Xu, Hongsheng Li, Shaoting Zhang, Xiaogang Wang, Xiaolei Huang, Dimitris Metaxas, ICCV 2017.
+Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network, Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, Wenzhe Shi, CVPR 2017.
+Context Encoders: Feature Learning by Inpainting, Deepak Pathak, Philipp Krahenbuhl, Jeff Donahue, Trevor Darrell, Alexei A. Efros, CVPR 2016.
+Domain Separation Networks, Konstantinos Bousmalis, George Trigeorgis, Nathan Silberman, Dilip Krishnan, Dumitru Erhan, NIPS 2016.
+Semantic Image Synthesis with Spatially-Adaptive Normalization, Taesung Park, Ming-Yu Liu, Ting-Chun Wang, Jun-Yan Zhu, CVPR 2019.
+Manipulating Attributes of Natural Scenes via Hallucination, Levent Karacan, Zeynep Akata, Aykut Erdem, Erkut Erdem, ACM Transactions on Graphics, November 2019, Article No: 7.
+Image Synthesis in Multi-Contrast MRI with Conditional Generative Adversarial Networks, Salman Ul Hassan Dar, Mahmut Yurt, Levent Karacan, Aykut Erdem, Erkut Erdem, Tolga Çukur, IEEE Trans. Med. Imag., Vol. 38, Issue 10, pp. 2375-2388, October 2019.
+Adversarial Audio Synthesis, Chris Donahue, Julian McAuley, Miller Puckette, ICLR 2019.
+MaskGAN: Better Text Generation via Filling in the _______ , William Fedus, Ian Goodfellow, Andrew M. Dai, ICLR 2018.
+Lecture 7: Latent Variable Models (slides)
+latent variable models, variational autoencoders, importance weighted autoencoders, variational lower bound/evidence lower bound, likelihood ratio gradients vs. reparameterization trick gradients, Beta-VAE, variational dequantization
+
+Please study the following material in preparation for the class:
+
+Ket Readings:
+Sections 20.10.3 of the Deep Learning textbook.
+Chapter 2 of An Introduction to Variational Autoencoders, Kingma and Welling.
+Importance Weighted Autoencoders, Yuri Burda, Roger B. Grosse, Ruslan Salakhutdinov
+Auto-Encoding Variational Bayes, Diederik P. Kingma, Max Welling, ICLR 2014.
+Neural Discrete Representation Learning, Aaron van den Oord, Oriol Vinyals, Koray Kavukcuoglu, NIPS 2017.
+Generating Diverse High-Fidelity Images with VQ-VAE-2, Ali Razavi, Aäron van den Oord, Oriol Vinyals, NeurIPS 2019.
+beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, Irina Higgins, Loic Matthey, Arka Pal, Christopher Burgess, Xavier Glorot, Matthew Botvinick, Shakir Mohamed, Alexander Lerchner, ICLR 2017.
+
+Suggested Video Material:
+Andriy Mnih's lecture on Modern Latent Variable Models (also includes flow-based models)
+
+
+Additional Resources:
+Variational Inference lecture notes by David Blei.
+[Blog post] How I learned to stop worrying and write ELBO (and its gradients) in a billion ways, Yuge Shi.
+[Blog post] Intuitively Understanding Variational Autoencoders, Irhum Shafkat.
+[Blog post] A Beginner's Guide to Variational Methods: Mean-Field Approximation, Eric Jang.
+[Blog post] Tutorial - What is a variational autoencoder?, Jaan Altosaar
+[Blog post] MusicVAE: Creating a palette for musical scores with machine learning, Adam Roberts, Jesse Engel, Colin Raffel, Ian Simon, Curtis Hawthorne
+Discrete VAE’s, John Thickstun.
+Jukebox: A Generative Model for Music, Prafulla Dhariwal, Heewoo Jun, Christine Payne, Jong Wook Kim, Alec Radford, Ilya Sutskever, arXiv preprint arXiv:2005.00341, 2019.
+Improved Variational Inference with Inverse Autoregressive Flow, Durk P. Kingma, Tim Salimans, Rafal Jozefowicz, Xi Chen, Ilya Sutskever, Max Welling, NIPS 2016.
+PixelVAE: A Latent Variable Model for Natural Images, Ishaan Gulrajani, Kundan Kumar, Faruk Ahmed, Adrien Ali Taiga, Francesco Visin, David Vazquez, Aaron Courville, ICLR 2017.
+Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, Jonathan Ho, Xi Chen, Aravind Srinivas, Yan Duan, Pieter Abbeel, ICML 2019.
+Lecture 6: Normalizing Flow Models (slides)
+1-D flows, change of variables, autoregressive flows, inverse autoregressive flows, affine flows, RealNVP, Glow, TarFlow, Flow++, FFJORD, multi-scale flows, dequantization
+
+Please study the following material in preparation for the class:
+
+Key Readings:
+NICE: NICE: Non-linear Independent Components Estimation, Laurent Dinh, David Krueger, and Yoshua Bengio, ICLR 2015.
+IAF: Improved variational inference with inverse autoregressive flow, Durk P. Kingma, Tim Salimans, Rafal Jozefowicz, Xi Chen, Ilya Sutskever, Max Welling, NIPS 2016.
+RealNVP: Density estimation using Real NVP, Laurent Dinh, Jascha Sohl-Dickstein, Samy Bengio, ICLR 2017.
+Masked Autoregressive Flow for Density Estimation, George Papamakarios, Theo Pavlakou, Iain Murray, NIPS 2017.
+Neural autoregressive flows, Chin-Wei Huang, David Krueger, Alexandre Lacoste, Aaron Courville, ICML 2018.
+Glow: Generative Flow with Invertible 1×1 Convolutions, Diederik P. Kingma, Prafulla Dhariwal, NeurIPS 2018.
+Flow++L Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, Jonathan Ho, Xi Chen, Aravind Srinivas, Yan Duan, Pieter Abbeel, ICML 2019.
+Neural Importance Sampling, Thomas Müller, Brian McWilliams, Fabrice Rousselle, Markus Gross, Jan Novák, SIGGRAPH 2019.
+Ffjord: Ffjord: Free-form continuous dynamics for scalable reversible generative models, Will Grathwohl, Ricky T. Q. Chen, Jesse Bettencourt, Ilya Sutskever, David Duvenaud, ICLR 2019.
+Residual Flows for Invertible Generative Modeling, Ricky T. Q. Chen, Jens Behrmann, David Duvenaud, Jörn-Henrik Jacobsen, NeurIPS 2019.
+MintNet: MintNet: Building Invertible Neural Networks with Masked Convolutions, Yang Song, Chenlin Meng, Stefano Ermon, NeurIPS 2019.
+SRFLow: SRFlow: Learning the Super-Resolution Space with Normalizing Flow, Andreas Lugmayr, Martin Danelljan, Luc Van Gool, Radu Timofte, ECCV 2020.
+Continuous Language Generative Flow, Zineng Tang, Shiyue Zhang, Hyounghun Kim, Mohit Bansal. ACL 2021.
+FloWaveNet: FloWaveNet : A Generative Flow for Raw Audio, Sungwon Kim, Sang-gil Lee, Jongyoon Song, Jaehyeon Kim, Sungroh Yoon, ICML 2019.
+Go with the Flows: Mixtures of Normalizing Flows for Point Cloud Generation and Reconstruction, Janis Postels, Mengya Liu, Riccardo Spezialetti, Luc Van Gool, Federico Tombari, 3DV 2021.
+TarFlow: Normalizing Flows are Capable Generative Models. ArXiv Preprint arXiv:2412.06329v2, December 2024.
+
+Suggested Video Material:
+Marcus A. Brubaker's lecture on Introduction to Normalizing Flows
+Laurent Dinh's talk on A primer on normalizing flows
+
+
+Additional Resources:
+Normalizing Flows: An Introduction and Review of Current Methods, Ivan Kobyzev, Simon J.D. Prince, and Marcus A. Brubaker, IEEE PAMI, 2021.
+Normalizing Flows for Probabilistic Modeling and Inference, George Papamakarios, Eric Nalisnick, Danilo Jimenez Rezende, Shakir Mohamed, Balaji Lakshminarayanan, JMLR, 2021.
+[Blog post] Glow: Better Reversible Generative Models, OpenAI
+[Blog post] Normalizing Flows Tutorial, Part 1: Distributions and Determinants, Eric Jang
+[Blog post] Normalizing Flows Tutorial, Part 2: Modern Normalizing Flows, Eric Jang
+[Blog post] Flow-based Deep Generative Models, Lilian Weng
+Lecture 5: Autoregressive Models (slides)
+histograms as simple generative models, parameterized distributions and maximum likelihood, Bayes’ Nets, MADE, Causal Masked Neural Models, RNN-based autoregressive models, masking-based autoregressive models
+
+Please study the following material in preparation for the class:
+
+Key Readings:
+Sections 2.1-2.3, 3.1-3.3 of the Deep Generative Modeling textbook.
+Modeling High-Dimensional Discrete Data with Multi-Layer Neural Networks, Y. Bengio and S. Bengio. NIPS 1999.
+char-rnn: http://karpathy.github.io/2015/05/21/rnn-effectiveness/
+MADE: MADE: Masked Autoencoder for Distribution Estimation, Mathieu Germain, Karol Gregor, Iain Murray, Hugo Larochelle. ICML 2015.
+WaveNet: WaveNet: A Generative Model for Raw Audio, Aaron van den Oord, Sander Dieleman, Heiga Zen, Karen Simonyan, Oriol Vinyals, Alex Graves, Nal Kalchbrenner, Andrew Senior, Koray Kavukcuoglu. arXiv preprint arXiv:1609.03499, 2016.
+PixelCNN: Pixel Recurrent Neural Networks, Aaron Van Oord, Nal Kalchbrenner, Koray Kavukcuoglu. ICML 2016.
+Gated PixelCNN: Conditional Image Generation with PixelCNN Decoders, Aaron van den Oord, Nal Kalchbrenner, Lasse Espeholt, koray kavukcuoglu, Oriol Vinyals, Alex Graves, NIPS 2016.
+PixelCNN++: PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, Tim Salimans, Andrej Karpathy, Xi Chen, Diederik P. Kingma, ICLR 2017.
+PixelSNAIL: PixelSNAIL: An Improved Autoregressive Generative Model, XI Chen, Nikhil Mishra, Mostafa Rohaninejad, Pieter Abbeel. ICML 2018.
+Fast PixelCNN++: Fast Generation for Convolutional Autoregressive Models, Prajit Ramachandran, Tom Le Paine, Pooya Khorrami, Mohammad Babaeizadeh, Shiyu Chang, Yang Zhang, Mark A. Hasegawa-Johnson, Roy H. Campbell, Thomas S. Huang. ICLR 2017 Workshop.
+Multiscale PixelCNN: Parallel Multiscale Autoregressive Density Estimation, Scott Reed, Aäron Oord, Nal Kalchbrenner, Sergio Gómez Colmenarejo, Ziyu Wang, Yutian Chen, Dan Belov, Nando Freitas. ICML 2017.
+Grayscale PixelCNN: PixelCNN Models with Auxiliary Variables for Natural Image Modeling, Alexander Kolesnikov, Christoph H. Lampert. ICML 2017.
+Subscale Pixel Network: Generating High Fidelity Images with Subscale Pixel Networks and Multidimensional Upscaling, Jacob Menick, Nal Kalchbrenner. ICLR 2019.
+Scaling Autoregressive Video Models, Dirk Weissenborn, Oscar Täckström, Jakob Uszkoreit. ICLR 2020.
+Sparse Attention: Generating Long Sequences with Sparse Transformers, Rewon Child, Scott Gray, Alec Radford, Ilya Sutskever. arXiv preprint arXiv:1904.10509, 2019.
+PixelCNN Super Resolution: Pixel Recursive Super Resolution, Ryan Dahl, Mohammad Norouzi, Jonathon Shlens. ICCV 2017.
+Colorization Transformer: Colorization Transformer, Manoj Kumar, Dirk Weissenborn, Nal Kalchbrenner, ICLR 2021.
+PixelTransformer: PixelTransformer: Sample Conditioned Signal Generation, Shubham Tulsiani. Abhinav Gupta, ICML 2021.
+GPT-1: Improving Language Understanding by Generative Pre-Training, Alec Radford, Karthik Narasimhan, Tim Salimans, Ilya Sutskever, OpenAI Report, 2018.
+GPT-2: Language Models are Unsupervised Multitask Learners, Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, OpenAI Report, 2019.
+GPT-3: Language Models are Few-Shot Learners, Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah et al., NeurIPS 2020.
+iGPT: , Mark Chen, Alec Radford, Rewon Child, Jeffrey Wu, Heewoo Jun, David Luan, Ilya Sutskever, ICML 2020.
+VQ-VAE: Neural Discrete Representation Learning, Aaron van den Oord, Oriol Vinyals, Koray Kavukcuoglu, NIPS 2017.
+VQ-GAN: Taming transformers for high-resolution image synthesis, Patrick Esser, Robin Rombach, Björn Ommer, CVPR 2021.
+MAGVIT-v2: Language Model Beats Diffusion -- Tokenizer is Key to Visual Generation, Lijun Yu, José Lezama, Nitesh B. Gundavarapu et al., ICLR 2024.
+TiTok: An Image is Worth 32 Tokens for Reconstruction and Generation, Qihang Yu, Mark Weber, Xueqing Deng, Xiaohui Shen, Daniel Cremers, Liang-Chieh Chen, NeurIPS 2024.
+VAR: Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction, K. Tian et al., NeurIPS 2024.
+VideoPoet: VideoPoet: A Large Language Model for Zero-Shot Video Generation, Dan Kondratyuk, Lijun Yu, Xiuye Gu et al., arXiv Preprint arXiv:2312.14125, 2023.
+S4: Efficiently Modeling Long Sequences with Structured State Spaces, Albert Gu, Karan Goel, Christopher Ré, ICLR 2022.
+Linear Attention: Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention, Angelos Katharopoulos, Apoorv Vyas, Nikolaos Pappas, François Fleuret, ICML 2020.
+FSQ: Finite Scalar Quantization: VQ-VAE Made Simple, Fabian Mentzer, David Minnen, Eirikur Agustsson, Michael Tschannen, ICLR 2025.
+Gumbel-Softmax: Categorical reparameterization with gumbel-softmax, Eric Jang, Shixiang Gu, Ben Poole, ICLR 2017.
+Concrete Distribution: The Concrete Distribution: A Continuous Relaxation of Discrete Random Variables, Chris J. Maddison, Andriy Mnih, Yee Whye Teh, ICLR 2017.
+Image Transformer: Image transformerNiki Parmar, Ashish Vaswani, Jakob Uszkoreit, Łukasz Kaiser, Noam Shazeer, Alexander Ku, Dustin Tran, ICML 2018.
+Sparse Transformer: Generating Long Sequences with Sparse Transformers, Rewon Child, Scott Gray, Alec Radford, Ilya Sutskever,arXiv preprint arXiv:1904.10509, 2019.
+LVM: Sequential Modeling Enables Scalable Learning for Large Vision Models, Yutong Bai, Xinyang Geng, Karttikeya Mangalam, Amir Bar, Alan Yuille, Trevor Darrell, Jitendra Malik, Alexei A Efros, arXiv Preprint arXiv:2312.00785, 2023.
+
+Suggested Video Material:
+Hugo Larochelle's lecture on Autoregressive Generative Models with Deep Learning
+
+
+Additional Resources:
+[Blog post] Auto-Regressive Generative Models (PixelRNN, PixelCNN++), Harshit Sharma, Saurabh Mishra
+Lecture 4: Neural Building Blocks III: Attention and Transformers (slides)
+content-based attention, location-based attention, soft vs. hard attention, self-attention, attention for image captioning, transformer networks
+
+Please study the following material in preparation for the class:
+
+Key Readings:
+Neural Machine Translation by Jointly Learning to Align and Translate, D. Bahdanau, K. Cho, Y. Bengio, ICLR 2015
+Section 5 of Generating Sequence with Recurrent Neural Networks, A. Graves, ArXiV
+Attention Is All You Need, Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, Illia Polosukhin, NIPS 2017
+An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale. Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, Neil Houlsby. ICLR 2021.
+
+Suggested Video Material:
+Alex Graves' lecture on Attention and Memory in Deep Learning
+Łukasz Kaiser's talk on Attention is all you need attentional neural network models
+
+
+Additional Resources:
+Attention and Augmented Recurrent Neural Networks, Chris Olah and Shan Carter. Distill, 2016
+[Blog post] The Illustrated Transformer, Jay Alammar
+[Blog post] The Transformer Family, Lilian Weng
+Do Transformer Modifications Transfer Across Implementations and Applications?, Sharan Narang et al., arXiv preprint arXiv:2102.11972, 2021.
+Transformers in Vision: A Survey, Salman Khan, Muzammal Naseer, Munawar Hayat, Syed Waqas Zamir, Fahad Shahbaz Khan, and Mubarak Shah, arXiv preprint arXiv:2101.01169, 2021
+Lecture 3: Neural Building Blocks II: Sequential Processing with Recurrent Neural Networks (slides)
+sequence modeling, recurrent neural networks (RNNs), RNN applications, vanilla RNN, training RNNs, long short-term memory (LSTM), LSTM variants, gated recurrent unit (GRU)
+
+Please study the following material in preparation for the class:
+
+Key Readings:
+Chapter #10 of the Deep Learning text book.
+Section 1-3 of Generating Sequence with Recurrent Neural Networks, A. Graves, ArXiV
+
+Suggested Video Material:
+Efstratios Gavves and Max Welling's Lecture 8
+
+
+Additional Resources:
+[Blog post] Understanding LSTM Networks, Chris Olah.
+[Blog post] The Unreasonable Effectiveness of Recurrent Neural Networks, Andrej Karpathy.
+Learning Long-Term Dependencies with Gradient Descest is Difficult, Yoshua Bengio, Patrice Simard, and Paolo Frasconi.
+Long Short-Term Memory, Sepp Hochreiter and Jürgen Schmidhuber.
+Lecture 2: Neural Building Blocks I: Spatial Processing with CNNs (slides)
+deep learning, computation in a neural net, optimization, backpropagation, convolutional neural networks, residual connections, training tricks
+
+Please study the following material in preparation for the class:
+
+
+Key Readings:
+Chapter #8 and Chapter #9 of the Deep Learning text book.
+
+Suggested Video Material:
+Andrej Karpathy's Stanford CS231n Lecture 7
+Kaiming He's tutorial on Deep Residual Networks
+
+
+Additional Resources:
+Deep Convolutional Neural Networks for Image Classification: A Comprehensive Review, Waseem Rawat and Zenghui Wang. Neural Computation, Vol. 29 , No. 9, 2017
+Why Momentum Really Works, Gabrial Goh. Distill.
+A guide to convolution arithmetic for deep learning, Vincent Dumoulin and Francesco Visin.
+Multi-Scale Context Aggregation by Dilated Convolutions, Fisher Yu and Vladlen Koltun. ICLR 2016
+High-Performance Large-Scale Image Recognition Without Normalization, Andrew Brock, Soham De, Samuel L. Smith, Karen Simonyan
+[Blog post] In-layer normalization techniques for training very deep neural networks, Nikolas Adaloglou
+[Blog post] Understanding Convolutions, Christopher Olah.
+[Blog post] Deconvolution and Checkerboard Artifacts, Augustus Odena, Vincent Dumoulin, Chris Olah.
+
+Lecture 1: Introduction to the course (slides)
+course information, unsupervised learning
+
+Please study the following material in preparation for the class:
+
+
+Key Readings:
+[Blog post] Why generative modeling?, Jakub Tomczak.
+The Bandwagon, Claude E. Shannon. IRE Transactions on Information Theory, Vol. 2, Issue 3, 1956.
+The Bitter Lesson, Rich Sutton, March 13, 2019.
+
+design: templated.co
+
+About Schedule Presentations Assignments Project 
+COMP547: Deep Unsupervised Learning
+Spring 2026
+Course Project
+An integral part of the course is the class project (36% of the grade), which gives students a chance to explore the topics discussed in the class in some more detail and to apply them to a research-oriented project. The projects should be done in groups of two or three students. The course project may involve
+
+Application of deep generative models on a novel task/dataset,
+Design of a novel deep unsupervised learning method and its experimental analysis,
+An extension to a recent study of non-trivial complexity and its experimental analysis, or
+Reproduction of a published work -- participation in ML Reproducibility Challenge is strongly encouraged if you choose this path.
+
+In preparing your progress and final project reports, you should use the provided LaTeX template and submit them electronically in PDF format. Late submissions will be penalized.
+
+Deliverables
+Proposals (2%): March 29, 2026
+Project progress presentations (6%): April 28-30, 2026
+Project progress reports (8%): May 3, 2026
+Final project presentations (9%): June 9-11, 2026
+Final reports (12%): June 14, 2026
+The quality of the contributions/The difficulty of implementation (4%)
+Project Proposal
+Each team should submit a project proposal (~2 page long) on their specific project idea by March 29, 2026. The proposal should be prepared using this LaTeX template and should provide the following:
+
+The research topic to be investigated,
+A list of key readings.
+Design overview,
+What data and metrics you will use,
+An approximate timeline of activities.
+
+The proposal should include the following sections:
+
+1/4 page introduction
+1/2 page related works
+1/4 page method
+1/8 page experimental evaluation
+1/8 page work plan
+1/4 page abstract and reference
+Progress Report
+Due: May 11, 2026 (11:59pm)
+
+Each team should submit a project progress report by May 3, 2026. The report should be 6 pages, not including bibliography, and should be prepared using this LaTeX template. In your report, please describe the following points as clearly as possible:
+
+Abstract. A summary of your project idea and its contributions
+Problem to be addressed. Give a short description of the problem that you will explore. Explain why you find it interesting.
+Related work. Briefly review the major works related to your research topic.
+Methodology to be employed. Describe the main approach that is expected to form the basis of the project. State whether you will extend an existing method or you are going to devise your own approach. Add necessary equations/theorems to formally present the problem and/or your model.
+Experimental evaluation. Briefly explain how you will evaluate your results. State which dataset(s) you will employ in your evaluation.
+Preliminary results. Implement a simple baseline method and report its performance. Include the results of your model (if any).
+Visualization. Include a figure or a diagram that describes an overview of your approach.
+Final Report
+Due: June 14, 2026 (11:59pm) (No late submissions)
+
+As the last deliverable of the course project, each team is expected to submit a project report prepared using this LaTeX template. The report should be 8 pages and should be structured as a research paper. It will be graded based on clarity of presentation and technical content. A typical organization of a report might follow:
+
+Title, Author(s).
+Abstract.
+Introduction. This section introduces the problem that you investigated by providing a general motivation and briefly discusses the approach(es) that you explored to solve this problem.
+Related Work. This section discusses relevant literature for your project topic.
+The Approach. This section gives the technical details about your project work. You should describe the representation(s) and the algorithm(s) that you employed or proposed as detailed and specific as possible.
+Experimental Results. This section presents some experiments in which you analyze the performance of the approach(es) you proposed or explored. You should provide a qualitative and/or quantitative analysis, and comment on your findings. You may also demonstrate the limitations of the approach(es).
+Conclusions. This section summarizes all your project work, focusing on the key results you obtained. You may also suggest possible directions for future work.
+Acknowledgements. This section provides information about specific contributions of each team member to the project (see Contributions section of the GPT3 paper as an example). This section does not count within the 8 pages limit.
+References. This section gives a list of all related work you reviewed or used.
+Project Presentations
+Project presentations will be graded according to this rubric.
+
+design: templated.co
