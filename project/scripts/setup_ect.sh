@@ -1,27 +1,62 @@
 #!/bin/bash
-# Setup script for ECT repo on Colab or local machine
-# Run from project/ directory
+# Project bootstrap for the COMP447 ECT vs Heun study.
+# Run from the repo root or from project/.
 
 set -e
 
-echo "Cloning ECT repo..."
-if [ -d "src/ect" ]; then
-    echo "ECT repo already exists, pulling latest..."
-    cd src/ect && git pull && cd ../..
+if [ -d ".git" ]; then
+    ROOT_DIR="$(pwd)"
+elif [ -d "../.git" ]; then
+    ROOT_DIR="$(cd .. && pwd)"
 else
-    git clone https://github.com/locuslab/ect.git src/ect
+    echo "Run this script from the repo root or from project/." >&2
+    exit 1
 fi
 
-echo "Installing dependencies..."
-pip install -q torch torchvision
-pip install -q -r src/ect/requirements.txt 2>/dev/null || echo "No requirements.txt found, skipping"
+mkdir -p "$ROOT_DIR/project/src"
 
-echo "Downloading pretrained EDM checkpoint for CIFAR-10..."
-# TODO: check ECT repo for exact download command / path
-# The repo README should have instructions for downloading the EDM checkpoint
-echo "Check src/ect/README.md for checkpoint download instructions"
+echo "Repo root: $ROOT_DIR"
 
-echo "Setup complete. Next steps:"
-echo "  1. Download EDM CIFAR-10 checkpoint"
-echo "  2. Run: python src/ect/train.py  (check README for exact command)"
-echo "  3. Run: python scripts/measure_latency.py"
+echo
+echo "Cloning or refreshing ECT..."
+if [ -d "$ROOT_DIR/project/src/ect/.git" ]; then
+    git -C "$ROOT_DIR/project/src/ect" pull --ff-only
+else
+    git clone https://github.com/locuslab/ect.git "$ROOT_DIR/project/src/ect"
+fi
+
+echo
+echo "Cloning or refreshing EDM..."
+if [ -d "$ROOT_DIR/project/src/edm/.git" ]; then
+    git -C "$ROOT_DIR/project/src/edm" pull --ff-only
+else
+    git clone https://github.com/NVlabs/edm.git "$ROOT_DIR/project/src/edm"
+fi
+
+echo
+echo "Bootstrap complete."
+echo
+echo "Next steps:"
+echo "  1. Create the runtime environment shown in:"
+echo "     - $ROOT_DIR/project/src/ect/env.yml"
+echo "     - $ROOT_DIR/project/src/edm/environment.yml"
+echo
+echo "  2. Prepare CIFAR-10 in EDM format:"
+echo "     cd $ROOT_DIR/project/src/ect"
+echo "     python3 dataset_tool.py --source=/path/to/cifar-10-python.tar.gz --dest=datasets/cifar10-32x32.zip"
+echo
+echo "  3. Run an ECT sanity check:"
+echo "     cd $ROOT_DIR/project/src/ect"
+echo "     bash run_ecm_1hour.sh 1 29500 --desc monday_sanity"
+echo
+echo "  4. Evaluate an ECT checkpoint:"
+echo "     cd $ROOT_DIR/project/src/ect"
+echo "     bash eval_ecm.sh 1 29501 --resume /path/to/network-snapshot.pkl"
+echo
+echo "  5. Measure latency locally once checkpoints are available:"
+echo "     cd $ROOT_DIR"
+echo "     python3 project/scripts/measure_latency.py --checkpoint /path/to/checkpoint.pkl --sampler ect --steps 2 --batch_size 1"
+echo
+echo "  6. Heun / EDM baseline reference:"
+echo "     cd $ROOT_DIR/project/src/edm"
+echo "     python3 generate.py --outdir=out --steps=18 --network=https://nvlabs-fi-cdn.nvidia.com/edm/pretrained/baseline/baseline-cifar10-32x32-uncond-vp.pkl"

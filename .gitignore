@@ -25,9 +25,11 @@ venv/
 *.pth
 *.ckpt
 *.npz
-project/src/ect/  # cloned separately
 project/results/*.png
 project/results/*.npz
 
 # Colab
 .ipynb_checkpoints/
+
+# Upstream repos (cloned fresh via project/scripts/setup_ect.sh)
+project/src/
