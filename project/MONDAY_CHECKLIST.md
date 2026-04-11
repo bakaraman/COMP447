@@ -1,155 +1,145 @@
-# Monday Checklist
+# Monday Checklist — Andrew Meeting, April 13, 2026, 15:30
 
-## Goal
+## Status: pipeline alive, throughput measured, plan revised
 
-By the first Andrew meeting, the project should feel concrete, not fuzzy.
+As of April 11 (Friday), the ECT training + evaluation pipeline is running end-to-end on a Colab GPU. The Monday meeting no longer needs to justify setup — it needs to present measurements and a revised plan.
 
-That means we do **not** need final results yet, but we **do** need:
+---
 
-- a precise experimental framing
-- a clear explanation of the extension angle
-- the actual upstream repos in place
-- a runnable setup path for ECT and EDM
-- a concrete plan for the first pilot measurements
+## What works (evidence collected)
 
-## What we already fixed
+- **ECT repo cloned + patched** for torch 2.10 compatibility
+  - Upstream bug: `InfiniteSampler.__init__(dataset)` breaks on torch >= 2.2
+  - Fix in `project/scripts/setup_ect.sh` is now permanent and idempotent
+- **EDM repo cloned** for Heun baseline
+- **CIFAR-10 prepared** in EDM format (`datasets/cifar10-32x32.zip`, 159 MB)
+- **Pretrained EDM checkpoint** (`edm-cifar10-32x32-uncond-vp.pkl`) downloads and loads
+- **End-to-end training loop validated:** 20 kimg sanity run completed on both T4 and Blackwell
+  - Loss finite and stable (15–17 band)
+  - Clean exit
+  - Checkpoint saved
+- **FID evaluation working:**
+  - 1-step FID50k computed end-to-end
+  - 2-step FID50k computed end-to-end
+- **Sample image export working**
 
-- ECT repo cloned into `project/src/ect/`
-- EDM repo cloned into `project/src/edm/`
-- local latency script now supports:
-  - `ECT` few-step timing
-  - `EDM / Heun-style` timing
+## Throughput measurements (the headline finding)
 
-## What to do before Monday
+Measured `sec/kimg` on two GPUs at batch=64, fp32, CIFAR-10 32×32, DDPM++ 55.7M parameters:
 
-### 1. Confirm environment path
+| GPU | Measured sec/kimg | Implied full `run_ecm_1hour.sh` (25,600 kimg) |
+|---|---|---|
+| Tesla T4 (16 GB) | **29.0** | **~206 hours (~8.6 days)** |
+| RTX PRO 6000 Blackwell (102 GB) | **2.68** | ~19 hours |
+| A100 (est. from published benchmarks) | ~4-5 | ~30-35 hours |
+| H100 (est.) | ~2-3 | ~15-20 hours |
 
-Choose the runtime for actual experiments:
+**Implication for the project:** the ECT paper's `run_ecm_1hour.sh` script is **not a 1-hour job on any single Colab GPU**. The "1 hour" name presumably refers to the paper's datacenter hardware or multi-GPU scaling. On a single T4 (our proposal's target hardware), the full schedule would take over a week.
 
-- preferred: Colab T4
-- fallback: any CUDA Linux box
+## Headline 20-kimg FID numbers (sanity only, not comparable to paper)
 
-Minimum environment packages from ECT:
+From the Blackwell sanity run:
 
-- `torch`
-- `numpy`
-- `scipy`
-- `click`
-- `pillow`
-- `requests`
-- `psutil`
-- `tqdm`
-- `imageio`
-- `imageio-ffmpeg`
-- `pyspng`
-- `diffusers`
-- `accelerate`
+- 1-step FID50k: **386.46**
+- 2-step FID50k: **147.90**
 
-### 2. Prepare CIFAR-10 in EDM / ECT format
+These are deliberately undertrained numbers (0.08% of the paper's tuning budget) and are **not a meaningful quality measurement**. They only prove the evaluation plumbing works. Paper reports ECT 2-step ≈ 2-3 after full tuning.
 
-Need:
+---
 
-- raw `cifar-10-python.tar.gz`
-- converted dataset zip: `cifar10-32x32.zip`
+## Revised plan for the Monday meeting
 
-Reference conversion command from the upstream repos:
+### 1. Honest framing
 
-```bash
-cd project/src/ect
-python3 dataset_tool.py --source=/path/to/cifar-10-python.tar.gz --dest=datasets/cifar10-32x32.zip
-```
+> We have a working ECT training and evaluation pipeline on Colab. We measured ECT's actual throughput on T4 and found the "1-hour" training script would take over a week on T4. We are revising the tuning budget downward to a schedule that fits Colab's compute constraints while still producing a meaningful ECT vs Heun comparison.
 
-### 3. Dry-run ECT training config
+### 2. Revised tuning schedule
 
-Target command family:
+Instead of the paper's 25,600 kimg (infeasible), we use a **medium schedule of 2,000 kimg** (~7.8% of paper) as the main tuning budget. This gives:
 
-```bash
-cd project/src/ect
-bash run_ecm_1hour.sh 1 29500 --desc monday_sanity
-```
+- Real (not random-init) ECT checkpoint
+- Meaningful 2-step FID (expected ~30-80, vs 148 at 20 kimg and ~2-3 fully trained)
+- ~15 min on Blackwell / ~30 min on L4 / ~1.5 hours on T4
+- Leaves room in the compute budget for tuning-budget ablation checkpoints at 500 / 1000 / 2000 kimg
 
-This may still need local adjustments depending on the runtime.
+### 3. Latency measurement commitment (unchanged)
 
-### 4. Confirm ECT evaluation path
+- **All latency measurements will still be on T4**, not Blackwell/L4/A100
+- This is the proposal's stated hardware and cannot change
+- Training GPU is separate from inference GPU — we can use fast GPUs for tuning and switch back to T4 for the latency-matched comparison
 
-Official evaluation command family:
+### 4. Tuning-budget ablation (unchanged intent, different absolute numbers)
 
-```bash
-cd project/src/ect
-bash eval_ecm.sh 1 29501 --resume /path/to/network-snapshot.pkl
-```
+Instead of checkpoints at 25/50/75/100% of a 25,600-kimg schedule, we use checkpoints at:
+- 500 kimg (25% of medium schedule)
+- 1,000 kimg (50%)
+- 1,500 kimg (75%)
+- 2,000 kimg (100%)
 
-Local wrapper alternative:
+We report FID vs kimg to show the early-stopping story, even if the absolute FID is worse than paper.
 
-```bash
-python3 project/scripts/eval_fid.py ect \
-  --checkpoint /path/to/network-snapshot.pkl \
-  --data /path/to/cifar10-32x32.zip
-```
+### 5. Compute budget
 
-### 5. Confirm Heun / EDM baseline path
+Rough estimates per run on Blackwell (~50 compute units/hour):
 
-For the baseline, use the official EDM sampler on the same pretrained EDM checkpoint family.
+| Run | kimg | Time | Units |
+|---|---|---|---|
+| Medium tuning (main) | 2,000 | ~15 min | ~12 |
+| Ablation 500-kimg checkpoint | 500 | ~4 min | ~3 |
+| Ablation 1,000-kimg checkpoint | 1,000 | ~8 min | ~7 |
+| Ablation 1,500-kimg checkpoint | 1,500 | ~11 min | ~9 |
+| Latency measurements on T4 (post-training) | — | ~20 min | ~1 |
+| Heun baseline sweeps on T4 | — | ~30 min | ~1 |
+| **Total estimate** | — | ~1.5 hours | **~35 units** |
 
-Reference command family:
+Colab Pro budget is ~100 units/month — this fits comfortably if we stay disciplined.
 
-```bash
-cd project/src/edm
-python3 generate.py --outdir=out --steps=18 \
-  --network=https://nvlabs-fi-cdn.nvidia.com/edm/pretrained/baseline/baseline-cifar10-32x32-uncond-vp.pkl
-```
+---
 
-And for FID:
+## Questions for Andrew
 
-```bash
-cd project/src/edm
-torchrun --standalone --nproc_per_node=1 fid.py calc \
-  --images=fid-tmp \
-  --ref=https://nvlabs-fi-cdn.nvidia.com/edm/fid-refs/cifar10-32x32.npz
-```
+1. **Is 2,000-kimg tuning enough as the main ECT tuning budget, given the paper uses 25,600?**
+   Our framing: we're not reproducing the paper's FID. We're measuring the latency–quality tradeoff at budgets that fit commodity GPU time, which is itself an interesting finding ("cheap ECT is cheaper than advertised but not as good").
 
-Local wrapper alternative:
+2. **Should the Heun baseline come from the same pretrained EDM checkpoint throughout?**
+   Current plan: yes, `edm-cifar10-32x32-uncond-vp.pkl` is the shared starting point for both ECT tuning and Heun evaluation.
 
-```bash
-python3 project/scripts/eval_fid.py images --images /path/to/generated_images
-```
+3. **Does the throughput finding itself belong in the report as a claim?**
+   Our view: yes, as an auxiliary observation. "ECT's 1-hour marketing is optimistic for commodity GPUs" is a useful note for anyone trying to reproduce.
 
-### 6. Run the first latency pilots
+4. **Is the tuning-budget ablation still compelling at a 2,000-kimg max instead of the paper's 25,600?**
+   The story changes slightly: instead of "how close can you get to the paper with less tuning", it becomes "how quickly does the curve bend toward usable quality".
 
-After the environment works, measure:
+5. **Progress report deadline** — should we plan around April 30 as the safer date if the course communication stays inconsistent?
 
-- ECT `1-step`, batch `1`
-- ECT `2-step`, batch `1`
-- Heun baseline, a few step counts, batch `1`
-- then repeat for batch `64`
+---
 
-Local wrapper command:
+## What changed vs the original plan
 
-```bash
-python3 project/scripts/measure_latency.py \
-  --checkpoint /path/to/checkpoint.pkl \
-  --sampler ect \
-  --steps 2 \
-  --batch_size 1 \
-  --num_runs 100 \
-  --warmup 20
-```
+| Item | Original plan | Revised plan |
+|---|---|---|
+| ECT tuning budget | full paper schedule (25,600 kimg) | medium schedule (2,000 kimg) |
+| ECT training GPU | T4 | Blackwell / L4 / A100 (whichever is available) |
+| Latency measurement GPU | T4 | T4 (unchanged) |
+| Ablation checkpoints | 25%, 50%, 75%, 100% of 25,600 | 25%, 50%, 75%, 100% of 2,000 |
+| FID target | match paper (2-3) | best achievable at 2,000 kimg (likely 20-60) |
+| Break-even analysis | unchanged | unchanged |
+| Heun baseline plan | unchanged | unchanged |
 
-## What to tell Andrew
+---
 
-Short version:
+## Not part of Monday (deferred)
 
-> We are not doing pure reproduction. We compare ECT against Heun under matched latency budgets on a T4, then measure break-even generation count and tuning-budget ablations to study when consistency tuning is practically worthwhile.
+- Actual 2,000-kimg medium run (Cell 9 in the notebook) — will run after meeting confirms the revised plan
+- FID vs tuning-budget curve — needs the ablation checkpoints
+- Latency-matched grid on T4 — needs the tuned checkpoints
+- Final figures and tables — post-Phase 2
 
-## Questions to ask Andrew
+---
 
-- Is `latency-matched comparison + break-even + tuning-budget ablation` strong enough as the project extension?
-- Should the Heun baseline use the official EDM deterministic sampler as the main baseline throughout?
-- For the progress report, should we plan around the earlier date if the course communication stays inconsistent?
+## Files to show in the meeting
 
-## Subject to change
-
-- exact Heun step counts
-- exact latency targets
-- whether full ECT tuning fits in Colab/T4 comfortably
-- whether we keep only `2-step` tuning ablation or include `1-step` there too
+- `project/colab_first_run.ipynb` — the notebook that ran on Blackwell
+- `project/MONDAY_CHECKLIST.md` — this document
+- `project/PLAN.md` — the unchanged project plan (note: milestones may need date updates)
+- `final_upload/proposal_karaman_ozcelik.pdf` — the submitted proposal

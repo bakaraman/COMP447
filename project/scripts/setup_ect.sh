@@ -25,6 +25,17 @@ else
     git clone https://github.com/locuslab/ect.git "$ROOT_DIR/project/src/ect"
 fi
 
+# Patch ECT for torch >= 2.2 compatibility.
+# torch.utils.data.Sampler.__init__ no longer accepts data_source arg, so
+# ECT's InfiniteSampler fails with "object.__init__() takes exactly one argument".
+# The sed is idempotent — running it twice is a no-op.
+ECT_MISC="$ROOT_DIR/project/src/ect/torch_utils/misc.py"
+if grep -q 'super().__init__(dataset)' "$ECT_MISC" 2>/dev/null; then
+    sed -i.bak 's|super().__init__(dataset)|super().__init__()|' "$ECT_MISC"
+    rm -f "${ECT_MISC}.bak"
+    echo "  patched: InfiniteSampler.__init__ for torch >= 2.2"
+fi
+
 echo
 echo "Cloning or refreshing EDM..."
 if [ -d "$ROOT_DIR/project/src/edm/.git" ]; then
