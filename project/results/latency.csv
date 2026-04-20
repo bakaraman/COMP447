@@ -1,0 +1,15 @@
+sampler,steps,batch_size,median_ms,mean_ms,std_ms,gpu
+ect,1,1,7.0462,7.0591,0.0935,NVIDIA RTX PRO 6000 Blackwell Server Edition
+ect,1,64,0.5772,0.5772,0.0003,NVIDIA RTX PRO 6000 Blackwell Server Edition
+ect,2,1,13.9652,13.9893,0.1713,NVIDIA RTX PRO 6000 Blackwell Server Edition
+ect,2,64,1.1538,1.1538,0.0006,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,5,1,62.2107,62.1251,0.4287,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,5,64,5.1639,5.1631,0.0038,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,10,1,131.7489,131.7694,0.2627,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,10,64,10.898,10.8971,0.0089,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,18,1,243.786,243.3256,1.544,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,18,64,20.0468,20.0504,0.0105,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,25,1,331.6572,335.1716,5.4249,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,25,64,28.0732,28.0777,0.014,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,50,1,673.5036,673.2739,1.5897,NVIDIA RTX PRO 6000 Blackwell Server Edition
+heun,50,64,56.7224,56.7243,0.0159,NVIDIA RTX PRO 6000 Blackwell Server Edition

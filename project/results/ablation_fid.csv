@@ -1,0 +1,5 @@
+kimg,tick,fid_1step,fid_2step,snapshot
+500,50,8.135476124822045,,ct-runs-medium/00000-cifar10-32x32-uncond-ddpmpp-ect-RAdam-0.000100-gpus1-batch128-fp32-medium_2k/network-snapshot-000050.pkl
+1000,100,2.7730464596706557,,ct-runs-medium/00000-cifar10-32x32-uncond-ddpmpp-ect-RAdam-0.000100-gpus1-batch128-fp32-medium_2k/network-snapshot-000100.pkl
+1500,150,2.7021001419223447,,ct-runs-medium/00000-cifar10-32x32-uncond-ddpmpp-ect-RAdam-0.000100-gpus1-batch128-fp32-medium_2k/network-snapshot-000150.pkl
+1980,198,2.446277615255744,,ct-runs-medium/00000-cifar10-32x32-uncond-ddpmpp-ect-RAdam-0.000100-gpus1-batch128-fp32-medium_2k/network-snapshot-000198.pkl

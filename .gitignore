@@ -24,9 +24,12 @@ venv/
 *.pt
 *.pth
 *.ckpt
+*.pkl
 *.npz
-project/results/*.png
 project/results/*.npz
+
+# Local backup of large files (checkpoints etc.)
+project/results_backup/
 
 # Colab
 .ipynb_checkpoints/
