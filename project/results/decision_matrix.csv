@@ -1,0 +1,9 @@
+target_fid,n_images,batch_size,scenario,strategy,config,predicted_fid,per_image_ms,training_cost_ms,total_wall_ms
+2.5,100,1,"Interactive demo, high quality, small N",ECT (with tuning),ECT 1-step @ 1980 kimg tuning,2.446277615255744,7.0462,5346000.0,5346704.62
+2.5,1000,1,"Interactive demo, high quality, medium N",ECT (with tuning),ECT 1-step @ 1980 kimg tuning,2.446277615255744,7.0462,5346000.0,5353046.2
+2.5,10000,1,"Bulk generation, high quality, medium N",ECT (with tuning),ECT 1-step @ 1980 kimg tuning,2.446277615255744,7.0462,5346000.0,5416462.0
+2.5,100000,1,"Bulk generation, high quality, large N",ECT (with tuning),ECT 1-step @ 1980 kimg tuning,2.446277615255744,7.0462,5346000.0,6050620.0
+2.5,100000,64,"Bulk generation, high quality, batched",ECT (with tuning),ECT 1-step @ 1980 kimg tuning,2.446277615255744,0.5772,5346000.0,5403720.0
+5.0,100,1,"Relaxed quality, small N",Heun (no tuning),Heun 10-step,4.74202,131.7489,0.0,13174.89
+5.0,10000,1,"Relaxed quality, medium N",Heun (no tuning),Heun 10-step,4.74202,131.7489,0.0,1317489.0
+10.0,10000,1,"Low-stakes/quality, medium N",Heun (no tuning),Heun 10-step,4.74202,131.7489,0.0,1317489.0
