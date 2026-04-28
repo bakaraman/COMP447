@@ -248,8 +248,8 @@ add_text(s, 0.55, 2.95, 12, 1.4,
          "When Does Cheap Consistency Tuning Pay Off?",
          size=38, bold=True, color=INK)
 add_text(s, 0.55, 4.20, 12, 0.6,
-         "ECT vs Heun under matched latency, and a principled schedule "
-         "for few step sampling.",
+         "When is consistency tuning worth it?  ·  "
+         "The open question we found.",
          size=16, color=GRAY)
 add_text(s, 0.55, 5.55, 12, 0.4,
          "Batuhan Karaman   ·   Kadir Yiğit Özçelik",
