@@ -56,16 +56,23 @@ def run_one(checkpoint: str, mid_t: float, num: int, gen_batch: int, fid_batch: 
         "--fid_batch", str(fid_batch),
         "--seed", str(seed),
     ]
-    print(f"[mid_t={mid_t:.3f}] running: {' '.join(cmd)}")
+    print(f"[mid_t={mid_t:.3f}] running: {' '.join(cmd)}", flush=True)
     t0 = time.perf_counter()
-    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(repo_root))
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            text=True, bufsize=1, cwd=str(repo_root))
+    captured = []
+    assert proc.stdout is not None
+    for line in proc.stdout:
+        sys.stdout.write(line)
+        sys.stdout.flush()
+        captured.append(line)
+    proc.wait()
     dt = time.perf_counter() - t0
+    full_stdout = "".join(captured)
     if proc.returncode != 0:
-        sys.stderr.write(proc.stdout)
-        sys.stderr.write(proc.stderr)
-        raise RuntimeError(f"eval_fid.py failed at mid_t={mid_t}")
-    fid = parse_fid_from_eval(proc.stdout)
-    print(f"[mid_t={mid_t:.3f}] FID={fid:.4f}  wall={dt:.1f}s")
+        raise RuntimeError(f"eval_fid.py failed at mid_t={mid_t} (rc={proc.returncode})")
+    fid = parse_fid_from_eval(full_stdout)
+    print(f"[mid_t={mid_t:.3f}] FID={fid:.4f}  wall={dt:.1f}s", flush=True)
     return fid, dt
 
 
