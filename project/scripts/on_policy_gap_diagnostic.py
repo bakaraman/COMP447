@@ -25,6 +25,7 @@ import csv
 import math
 import os
 import pickle
+import subprocess
 import sys
 import tarfile
 import zipfile
@@ -125,7 +126,19 @@ def find_dataset(repo_root: Path, explicit: str | None) -> Path:
 
 
 def load_real_images(repo_root: Path, dataset: str | None, num: int, seed: int) -> torch.Tensor:
-    path = find_dataset(repo_root, dataset)
+    try:
+        path = find_dataset(repo_root, dataset)
+    except FileNotFoundError:
+        # Keep the diagnostic runnable from one cell. The Toronto CIFAR URL was
+        # flaky in Colab, so prepare a local zip through the Hugging Face mirror
+        # helper and then retry discovery.
+        default_out = Path("/content/drive/MyDrive/COMP447/cifar10-32x32.zip")
+        helper = repo_root / "project" / "scripts" / "prepare_cifar10_zip.py"
+        if not helper.exists():
+            raise
+        print(f"CIFAR-10 zip not found. Preparing it once at: {default_out}")
+        subprocess.check_call([sys.executable, str(helper), "--out", str(default_out)])
+        path = find_dataset(repo_root, dataset)
     print(f"Using dataset: {path}")
     if path.name == "cifar-10-python.tar.gz":
         images = load_from_cifar_tar(path, num=max(num, 50000))
